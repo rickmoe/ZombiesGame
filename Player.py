@@ -15,6 +15,7 @@ class Player:
         self.visorLength = visorLengthDeg       # In Degrees
         self.speed = speed
         self.gun = M1911()
+        self.shooting = False
 
     def draw(self, win):
         pygame.draw.circle(win, (0, 0, 255), (self.x, self.y), self.radius)
@@ -23,6 +24,8 @@ class Player:
         pygame.draw.arc(win, (0, 255, 0), arcRect, degreesToRadians(self.facing) - degreesToRadians(self.visorLength) / 2,
                         degreesToRadians(self.facing) + degreesToRadians(self.visorLength) / 2, width=int(self.radius / 6))
         self.gun.draw(win, self.x, self.y, self.radius, self.facing)
+        if self.shooting:
+            self.gun.shoot(win, self.x, self.y, self.radius, self.facing)
 
     def updatePos(self):
         keys = pygame.key.get_pressed()
@@ -36,11 +39,17 @@ class Player:
         if keys[pygame.K_d]:
             vel[0] += 1
         velDir = getCordsDirectionDeg(vel[0], vel[1])
-        self.facing = self.facing if vel[0] == 0 and vel[1] == 0 else velDir
         deltaX, deltaY = getRectCordsOnCircleDeg(velDir, 0 if vel[0] == 0 and vel[1] == 0 else self.speed)
-        deltaY = -deltaY        # Y axis is inverted on pygame display
         self.x += deltaX
-        self.y += deltaY
+        self.y -= deltaY        # y-axis is inverted on pygame
+        mouseX, mouseY = pygame.mouse.get_pos()
+        self.facing = radiansToDegrees(math.atan2(-(mouseY - self.y), mouseX - self.x))
+
+    def checkShooting(self, events):
+        self.shooting = False
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.shooting = True
 
 def degreesToRadians(deg):
     return deg / 180 * math.pi

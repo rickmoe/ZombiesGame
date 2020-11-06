@@ -15,21 +15,24 @@ win = pygame.display.set_mode((WIDTH, HEIGHT))
 
 players = [Player(WIDTH / 2, HEIGHT / 2)]
 
-def drawDisplay(window):
+def drawDisplay(window, events):
     window.fill((0, 0, 0))
     for player in players:
         player.updatePos()
+        player.checkShooting(events)
         player.draw(window)
     pygame.display.update()
 
 running = True
 while running:
 
-    drawDisplay(win)
+    events = pygame.event.get()
 
-    for event in pygame.event.get():
+    for event in events:
         if event.type == pygame.QUIT:
             running = False
+
+    drawDisplay(win, events)
 
     clock.tick(fps)
 

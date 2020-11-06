@@ -1,7 +1,11 @@
+import pygame
 import math
+from Constants import *
+pygame.init()
 
 class Gun:
 
+    LENGTH = 2.0                    # Multiplied by radius
     DRAW_DIST_FROM_CENTER = 0.9     # Percentage of the body before the gun is drawn
 
     def draw(self, win, x, y, r, theta):
@@ -22,10 +26,14 @@ class Gun:
         x, y = Gun.getDrawStartPos(x, y, r, theta)
         deltaX = length * math.cos(degreesToRadians(theta))
         deltaY = length * math.sin(degreesToRadians(theta))
-        print(math.cos(degreesToRadians(theta)))
         x += deltaX
         y -= deltaY
         return x, y
+
+    def shoot(self, win, x, y, r, theta):
+        Xi, Yi = self.getDrawEndPos(x, y, r, theta, self.LENGTH)
+        Xv, Yv = math.cos(degreesToRadians(theta)), -math.sin(degreesToRadians(theta))
+        pygame.draw.line(win, (192, 192, 192), (Xi, Yi), (Xi + Xv * 1.5 * max(WIDTH, HEIGHT), Yi + Yv * 1.5 * max(WIDTH, HEIGHT)), width=3)
 
 def degreesToRadians(deg):
     return deg / 180 * math.pi
