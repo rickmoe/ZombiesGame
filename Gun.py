@@ -33,7 +33,7 @@ class Gun:
     def shoot(self, win, x, y, r, theta):
         Xi, Yi = self.getDrawEndPos(x, y, r, theta, self.LENGTH)
         Xv, Yv = math.cos(degreesToRadians(theta)), -math.sin(degreesToRadians(theta))
-        pygame.draw.line(win, (192, 192, 192), (Xi, Yi), (Xi + Xv * 1.5 * max(WIDTH, HEIGHT), Yi + Yv * 1.5 * max(WIDTH, HEIGHT)), width=3)
+        pygame.draw.line(win, (255, 255, 255), (Xi, Yi), (Xi + Xv * 1.5 * max(WIDTH, HEIGHT), Yi + Yv * 1.5 * max(WIDTH, HEIGHT)), width=3)
 
 def degreesToRadians(deg):
     return deg / 180 * math.pi

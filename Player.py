@@ -27,6 +27,9 @@ class Player:
         if self.shooting:
             self.gun.shoot(win, self.x, self.y, self.radius, self.facing)
 
+    def getPos(self):
+        return self.x, self.y
+
     def updatePos(self):
         keys = pygame.key.get_pressed()
         vel = [0, 0]
