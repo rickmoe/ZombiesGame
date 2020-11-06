@@ -1,3 +1,5 @@
 WIDTH = 800
 HEIGHT = 800
+MAP_FOV = 400
+FPS = 60
 WIN_NAME = "Zombies"

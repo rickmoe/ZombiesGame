@@ -6,12 +6,7 @@ from Constants import *
 
 pygame.init()
 
-WIDTH = 800
-HEIGHT = 800
-MAP_FOV = 400
-
 clock = pygame.time.Clock()
-fps = 60
 
 pygame.display.set_caption(WIN_NAME)
 win = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -40,6 +35,6 @@ while running:
 
     drawDisplay(win, events)
 
-    clock.tick(fps)
+    clock.tick(FPS)
 
 pygame.quit()
