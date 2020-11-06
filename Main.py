@@ -1,4 +1,6 @@
 import pygame
+from Player import Player
+from Constants import *
 
 pygame.init()
 
@@ -8,11 +10,16 @@ HEIGHT = 800
 clock = pygame.time.Clock()
 fps = 60
 
+pygame.display.set_caption(WIN_NAME)
 win = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Zombies")
+
+players = [Player(WIDTH / 2, HEIGHT / 2)]
 
 def drawDisplay(window):
     window.fill((0, 0, 0))
+    for player in players:
+        player.updatePos()
+        player.draw(window)
     pygame.display.update()
 
 running = True
