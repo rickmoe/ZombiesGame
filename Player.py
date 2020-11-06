@@ -1,13 +1,16 @@
 import pygame
 pygame.init()
 import math
+from Constants import *
 from Guns.M1911 import M1911
 
 class Player:
 
     visorRadiusOffsetPercent = 1.025
+    BASE_SPEED = 3
+    SPRINT_SPEED = 4.5
 
-    def __init__(self, x, y, radius=20, facingDeg=180, visorLengthDeg=90, speed=2):
+    def __init__(self, x, y, radius=20, facingDeg=180, visorLengthDeg=90, speed=3):
         self.x = x
         self.y = y
         self.radius = radius
@@ -18,14 +21,14 @@ class Player:
         self.shooting = False
 
     def draw(self, win):
-        pygame.draw.circle(win, (0, 0, 255), (self.x, self.y), self.radius)
-        arcRect = (int(self.x - self.radius * self.visorRadiusOffsetPercent), int(self.y - self.radius * self.visorRadiusOffsetPercent),
+        pygame.draw.circle(win, (0, 0, 255), (WIDTH / 2, HEIGHT / 2), self.radius)
+        arcRect = (int(WIDTH / 2 - self.radius * self.visorRadiusOffsetPercent), int(HEIGHT / 2 - self.radius * self.visorRadiusOffsetPercent),
                         int(self.radius * self.visorRadiusOffsetPercent * 2), int(self.radius * self.visorRadiusOffsetPercent * 2))
         pygame.draw.arc(win, (0, 255, 0), arcRect, degreesToRadians(self.facing) - degreesToRadians(self.visorLength) / 2,
                         degreesToRadians(self.facing) + degreesToRadians(self.visorLength) / 2, width=int(self.radius / 6))
-        self.gun.draw(win, self.x, self.y, self.radius, self.facing)
+        self.gun.draw(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing)
         if self.shooting:
-            self.gun.shoot(win, self.x, self.y, self.radius, self.facing)
+            self.gun.shoot(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing)
 
     def getPos(self):
         return self.x, self.y
@@ -41,6 +44,10 @@ class Player:
             vel[1] -= 1
         if keys[pygame.K_d]:
             vel[0] += 1
+        if keys[pygame.K_LSHIFT]:
+            self.speed = self.SPRINT_SPEED
+        else:
+            self.speed = self.BASE_SPEED
         velDir = getCordsDirectionDeg(vel[0], vel[1])
         deltaX, deltaY = getRectCordsOnCircleDeg(velDir, 0 if vel[0] == 0 and vel[1] == 0 else self.speed)
         self.x += deltaX

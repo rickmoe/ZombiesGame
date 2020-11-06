@@ -13,6 +13,7 @@ win = pygame.display.set_mode((WIDTH, HEIGHT))
 
 players = [Player(WIDTH / 2, HEIGHT / 2)]
 currMap = Map1()
+mapFOV = FOV * max(WIDTH, HEIGHT)
 
 def drawDisplay(window, events):
     window.fill((0, 0, 0))
@@ -20,7 +21,7 @@ def drawDisplay(window, events):
         player.updatePos()
         player.checkShooting(events)
         x, y = player.getPos()
-        currMap.draw(window, x, y, MAP_FOV)
+        currMap.draw(window, x, y, mapFOV)
         player.draw(window)
     pygame.display.update()
 
