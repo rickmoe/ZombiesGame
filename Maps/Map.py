@@ -8,3 +8,5 @@ class Map:
         for room in self.rooms:
             if min(room.Xf, Xf) >= max(room.Xi, Xi) and min(room.Yf, Yf) >= max(room.Yi, Yi):
                 room.draw(win, x, y, mapFOV)
+            if room.Xi <= x <= room.Xf and room.Yi <= y <= room.Yf:
+                room.drawRoomName(win)

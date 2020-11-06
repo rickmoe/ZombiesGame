@@ -6,3 +6,6 @@ class SpawnRoom(Room):
     def __init__(self):
         super().__init__(100, 100, 700, 700)
         self.patterns = [WhiteTile()]
+
+    def getName(self):
+        return "Spawn Room"

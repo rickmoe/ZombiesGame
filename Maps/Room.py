@@ -1,3 +1,8 @@
+import pygame
+pygame.init()
+pygame.font.init()
+from Constants import *
+
 class Room:
 
     def __init__(self, Xi=0, Yi=0, Xf=0, Yf=0):
@@ -8,3 +13,11 @@ class Room:
         deltaX, deltaY = 400 - x, 400 - y
         for i in range(len(self.patterns)):
             self.patterns[i].drawRect(win, self.Xi + deltaX, self.Yi + deltaY, self.Xf + deltaX, self.Yf + deltaY)
+
+    def getName(self):
+        return ""
+
+    def drawRoomName(self, win):
+        myfont = pygame.font.SysFont(FONT, 48)
+        text = myfont.render(self.getName(), False, (128, 64, 64))
+        win.blit(text, (8, 8))
