@@ -1,9 +1,8 @@
 import pygame
-
+from DelayedAction import DelayedAction
 from Maps.Map1.Map1 import Map1
 from Player import Player
 from Constants import *
-
 pygame.init()
 
 clock = pygame.time.Clock()
@@ -23,6 +22,8 @@ def drawDisplay(window, events):
         currMap.draw(window, x, y, mapFOV)
         player.checkShooting(events)
         player.draw(window, currMap.getRenderedWalls())
+        for instance in DelayedAction.getInstances():
+            instance.tick()
     pygame.display.update()
 
 running = True

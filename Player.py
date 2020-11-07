@@ -7,8 +7,11 @@ from Guns.M1911 import M1911
 class Player:
 
     visorRadiusOffsetPercent = 1.025
-    BASE_SPEED = 3
-    SPRINT_SPEED = 4.5
+    BASE_SPEED = 4.0
+    SPRINT_SPEED = 6.0
+    MAX_SPRINT_FRAMES = 90
+    SPRINT_CD_FRAMES = 45
+    SPRINT_RUNOUT_CD_FRAMES = 90
 
     def __init__(self, x, y, radius=20, facingDeg=180, visorLengthDeg=90, speed=3):
         self.x = x
@@ -18,6 +21,8 @@ class Player:
         self.visorLength = visorLengthDeg       # In Degrees
         self.speed = speed
         self.gun = M1911()
+        self.sprintFrames = Player.MAX_SPRINT_FRAMES
+        self.sprintCdFrames = 0
         self.shooting = False
 
     def draw(self, win, walls):
@@ -46,9 +51,20 @@ class Player:
         if keys[pygame.K_d]:
             vel[0] += 1
         if keys[pygame.K_LSHIFT]:
-            self.speed = self.SPRINT_SPEED
+            if self.sprintFrames > 0:
+                self.speed = self.SPRINT_SPEED
+                self.sprintFrames -=1
+                self.sprintCdFrames = self.SPRINT_RUNOUT_CD_FRAMES if self.sprintFrames == 0 else self.SPRINT_CD_FRAMES
+            else:
+                self.speed = self.BASE_SPEED
+                self.decrementSprintCdFrames()
+                if self.sprintCdFrames <= 0:
+                    self.incrementSprintFrames()
         else:
             self.speed = self.BASE_SPEED
+            self.decrementSprintCdFrames()
+            if self.sprintCdFrames <= 0:
+                self.incrementSprintFrames()
         if keys[pygame.K_r]:
             self.gun.reload()
         if self.isRunningIntoWall(self.x, self.y, vel[0] * (self.speed + self.radius), 0, walls):
@@ -62,6 +78,12 @@ class Player:
         mouseX, mouseY = pygame.mouse.get_pos()
         self.facing = radiansToDegrees(math.atan2(-(mouseY - HEIGHT / 2), mouseX - WIDTH / 2))
         self.gun.decrementShotCdFrames()
+
+    def incrementSprintFrames(self):
+        self.sprintFrames = min(self.sprintFrames + 1, self.MAX_SPRINT_FRAMES)
+
+    def decrementSprintCdFrames(self):
+        self.sprintCdFrames = max(self.sprintCdFrames - 1, 0)
 
     def checkShooting(self, events):
         self.shooting = False

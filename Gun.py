@@ -1,6 +1,7 @@
 import pygame
 import math
 from Constants import *
+from DelayedAction import DelayedAction
 pygame.init()
 pygame.mixer.init()
 
@@ -18,7 +19,8 @@ class Gun:
     SHOT_CD_RELOAD_FRAMES = 0
     ammoClip = AMMO_CLIP
     ammoReserve = AMMO_RESERVE
-    shotCdFrames = SHOT_CD_FRAMES
+    shotCdFrames = 0
+    reloadCdFrames = 0
 
     @classmethod
     def drawGUI(cls, win, ammoClip, ammoRes):
@@ -86,22 +88,38 @@ class Gun:
             pygame.mixer.music.play()
 
     def reload(self):
-        if self.ammoReserve > 0 and self.ammoClip < self.AMMO_CLIP:
-            loadBullets = min(self.AMMO_CLIP - self.ammoClip, self.ammoReserve)
-            self.ammoReserve -= loadBullets
-            self.ammoClip += loadBullets
+        if self.ammoReserve > 0 and self.ammoClip < self.AMMO_CLIP and self.reloadCdFrames <= 0:
+            bullets = min(self.AMMO_CLIP - self.ammoClip, self.ammoReserve)
+            DelayedAction([[self.SHOT_CD_RELOAD_FRAMES, self.takeFromReserve, [bullets]], [self.SHOT_CD_RELOAD_FRAMES, self.addToClip, [bullets]]])
             self.shotCdFrames = self.SHOT_CD_RELOAD_FRAMES
+            self.reloadCdFrames = self.SHOT_CD_RELOAD_FRAMES
             pygame.mixer.music.load(self.RELOAD_SOUND)
             pygame.mixer.music.play()
 
     def decrementShotCdFrames(self):
         self.shotCdFrames = 0 if self.shotCdFrames <= 0 else self.shotCdFrames - 1
+        self.reloadCdFrames = 0 if self.reloadCdFrames <= 0 else self.reloadCdFrames - 1
 
     def drawWallHitmarker(self, win, x, y):
-        pygame.draw.line(win, (128, 64, 0), (x - 6, y - 6), (x + 6, y + 6), 10)
-        pygame.draw.line(win, (128, 64, 0), (x - 6, y + 6), (x + 6, y - 6), 10)
-        pygame.draw.line(win, (128, 64, 0), (x, y - 8), (x, y + 8), 10)
-        pygame.draw.line(win, (128, 64, 0), (x - 8, y), (x + 8, y), 10)
+        vals = [[1, 2, 2], [2, 3, 3], [3, 5, 6], [4, 6, 5], [6, 7, 2]]
+        colors = [(128, 64, 0), (128, 16, 0)]
+        MULT_1D = 1.8
+        for i, val in enumerate(vals):
+            for color in colors:
+                DelayedAction([[i, pygame.draw.line, [win, color, (x - val[0], y - val[0]), (x - val[1], y - val[1]), val[2]]],
+                               [i, pygame.draw.line, [win, color, (x - val[0], y + val[0]), (x - val[1], y + val[1]), val[2]]],
+                               [i, pygame.draw.line, [win, color, (x + val[0], y - val[0]), (x + val[1], y - val[1]), val[2]]],
+                               [i, pygame.draw.line, [win, color, (x + val[0], y + val[0]), (x + val[1], y + val[1]), val[2]]],
+                               [i, pygame.draw.line, [win, color, (x, y - val[0] * MULT_1D), (x, y - val[1] * MULT_1D), val[2] - 2]],
+                               [i, pygame.draw.line, [win, color, (x - val[0] * MULT_1D, y), (x - val[1] * MULT_1D, y), val[2] - 2]],
+                               [i, pygame.draw.line, [win, color, (x, y + val[0] * MULT_1D), (x, y + val[1] * MULT_1D), val[2] - 2]],
+                               [i, pygame.draw.line, [win, color, (x + val[0] * MULT_1D, y), (x + val[1] * MULT_1D, y), val[2] - 2]]])
+
+    def takeFromReserve(self, bullets):
+        self.ammoReserve -= bullets
+
+    def addToClip(self, bullets):
+        self.ammoClip += bullets
 
 def degreesToRadians(deg):
     return deg / 180 * math.pi
