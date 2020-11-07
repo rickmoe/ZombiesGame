@@ -5,6 +5,6 @@ class WhiteTile(Pattern):
     def __init__(self):
         super().__init__(50, 50)
         self.rectDimensions = [[50, 50]]
-        self.rectColors = [(192, 192, 192)]
+        self.rectColors = [(128, 128, 128)]
         self.lineDimensions = [[0, 0, 0, 50, 2], [0, 0, 50, 0, 2], [0, 50, 50, 50, 2], [50, 0, 50, 50, 2]]
-        self.lineColors = [(128, 128, 128)] * 4
+        self.lineColors = [(96, 96, 96)] * 4

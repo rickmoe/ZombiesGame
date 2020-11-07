@@ -11,7 +11,7 @@ class Pattern:
         self.lineDimensions = [[]]
         self.lineColors = []
 
-    def drawRect(self, win, Xi, Yi, Xf, Yf):
+    def drawRect(self, win, Xi, Yi, Xf, Yf, fov):
         for i in range(len(self.rectDimensions)):
             y = Yi
             while y < Yf:

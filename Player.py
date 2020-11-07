@@ -20,7 +20,7 @@ class Player:
         self.gun = M1911()
         self.shooting = False
 
-    def draw(self, win):
+    def draw(self, win, walls):
         pygame.draw.circle(win, (0, 0, 255), (WIDTH / 2, HEIGHT / 2), self.radius)
         arcRect = (int(WIDTH / 2 - self.radius * self.visorRadiusOffsetPercent), int(HEIGHT / 2 - self.radius * self.visorRadiusOffsetPercent),
                         int(self.radius * self.visorRadiusOffsetPercent * 2), int(self.radius * self.visorRadiusOffsetPercent * 2))
@@ -28,38 +28,60 @@ class Player:
                         degreesToRadians(self.facing) + degreesToRadians(self.visorLength) / 2, width=int(self.radius / 6))
         self.gun.draw(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing)
         if self.shooting:
-            self.gun.shoot(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing)
+            mouseX, mouseY = pygame.mouse.get_pos()
+            self.gun.shoot(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing, mouseX, mouseY, self.x, self.y, walls)
 
     def getPos(self):
         return self.x, self.y
 
-    def updatePos(self):
+    def updatePos(self, walls):
         keys = pygame.key.get_pressed()
         vel = [0, 0]
         if keys[pygame.K_w]:
-            vel[1] += 1
+            vel[1] -= 1
         if keys[pygame.K_a]:
             vel[0] -= 1
         if keys[pygame.K_s]:
-            vel[1] -= 1
+            vel[1] += 1
         if keys[pygame.K_d]:
             vel[0] += 1
         if keys[pygame.K_LSHIFT]:
             self.speed = self.SPRINT_SPEED
         else:
             self.speed = self.BASE_SPEED
+        if keys[pygame.K_r]:
+            self.gun.reload()
+        if self.isRunningIntoWall(self.x, self.y, vel[0] * (self.speed + self.radius), 0, walls):
+            vel[0] = 0
+        if self.isRunningIntoWall(self.x, self.y, 0, vel[1] * (self.speed + self.radius), walls):
+            vel[1] = 0
         velDir = getCordsDirectionDeg(vel[0], vel[1])
         deltaX, deltaY = getRectCordsOnCircleDeg(velDir, 0 if vel[0] == 0 and vel[1] == 0 else self.speed)
         self.x += deltaX
-        self.y -= deltaY        # y-axis is inverted on pygame
+        self.y += deltaY
         mouseX, mouseY = pygame.mouse.get_pos()
-        self.facing = radiansToDegrees(math.atan2(-(mouseY - self.y), mouseX - self.x))
+        self.facing = radiansToDegrees(math.atan2(-(mouseY - HEIGHT / 2), mouseX - WIDTH / 2))
+        self.gun.decrementShotCdFrames()
 
     def checkShooting(self, events):
         self.shooting = False
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.shooting = True
+
+    def isRunningIntoWall(self, x3, y3, xv, yv, walls):
+        x4, y4 = x3 + xv, y3 + yv
+        for wall in walls:
+            for i in range(len(wall.innerPoints) - 1):
+                x1, y1, x2, y2 = wall.innerPoints[i][0], wall.innerPoints[i][1], wall.innerPoints[i + 1][0], wall.innerPoints[i + 1][1]
+                denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
+                numerator = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
+                if denominator != 0:
+                    t = numerator / denominator
+                    u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator
+                    if 0 <= t <= 1 and 0 <= u <= 1:
+                        return True
+        return False
 
 def degreesToRadians(deg):
     return deg / 180 * math.pi

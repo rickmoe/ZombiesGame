@@ -11,18 +11,18 @@ clock = pygame.time.Clock()
 pygame.display.set_caption(WIN_NAME)
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 
-players = [Player(WIDTH / 2, HEIGHT / 2)]
+players = [Player(0, 0)]
 currMap = Map1()
 mapFOV = FOV * max(WIDTH, HEIGHT)
 
 def drawDisplay(window, events):
     window.fill((0, 0, 0))
     for player in players:
-        player.updatePos()
-        player.checkShooting(events)
+        player.updatePos(currMap.getRenderedWalls())
         x, y = player.getPos()
         currMap.draw(window, x, y, mapFOV)
-        player.draw(window)
+        player.checkShooting(events)
+        player.draw(window, currMap.getRenderedWalls())
     pygame.display.update()
 
 running = True
