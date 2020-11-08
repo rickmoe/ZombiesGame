@@ -19,6 +19,7 @@ def drawDisplay(window, events):
     for player in players:
         player.updatePos(currMap.getRenderedWalls())
         x, y = player.getPos()
+        player.checkDoorBuy(currMap)
         currMap.draw(window, x, y, mapFOV)
         player.checkShooting(events)
         player.draw(window, currMap.getRenderedWalls())

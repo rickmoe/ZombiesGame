@@ -7,13 +7,13 @@ class M1911(Gun):
 
     LENGTH = 1.2                    # Multiplied by radius
     DRAW_DIST_FROM_CENTER = 0.9     # Percentage of the body before the gun is drawn
-    AMMO_CLIP = 800
-    AMMO_RESERVE = 800
+    AMMO_CLIP = 8
+    AMMO_RESERVE = 80
     SHOT_CD_FRAMES = 5
-    SHOT_CD_RELOAD_FRAMES = 85
+    SHOT_CD_RELOAD_FRAMES = 58
     SHOOT_SOUND = './Sounds/M1911shot.mp3'      # https://www.fesliyanstudios.com/royalty-free-sound-effects-download/p226-9mm-pistol-gun-296
     CLICK_SOUND = './Sounds/M1911click.mp3'     # https://www.fesliyanstudios.com/royalty-free-sound-effects-download/p226-9mm-pistol-gun-296
-    RELOAD_SOUND = './Sounds/M1911reload.wav'   # https://opengameart.org/content/gun-reload-sounds
+    RELOAD_SOUND = './Sounds/M1911reload.wav'   # https://opengameart.org/content/handgun-reload-sound-effect
 
     def __init__(self):
         self.ammoClip = self.AMMO_CLIP

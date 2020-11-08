@@ -81,11 +81,10 @@ class Gun:
                 self.drawWallHitmarker(win, finalX, finalY)
                 self.ammoClip -= 1
                 self.shotCdFrames = self.SHOT_CD_FRAMES
-                pygame.mixer.music.load(self.SHOOT_SOUND)
-                pygame.mixer.music.play()
+                pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.SHOOT_SOUND))
         else:
-            pygame.mixer.music.load(self.CLICK_SOUND)
-            pygame.mixer.music.play()
+            if self.shotCdFrames <= 0:
+                pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.CLICK_SOUND))
 
     def reload(self):
         if self.ammoReserve > 0 and self.ammoClip < self.AMMO_CLIP and self.reloadCdFrames <= 0:

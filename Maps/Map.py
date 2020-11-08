@@ -3,6 +3,7 @@ class Map:
     def __init__(self):
         self.rooms = []
         self.renderedWalls = []
+        self.currRoom = None
 
     def draw(self, win, x, y, mapFOV):
         self.renderedWalls = []
@@ -13,6 +14,10 @@ class Map:
                 self.renderedWalls.extend(room.walls)
             if room.Xi <= x <= room.Xf and room.Yi <= y <= room.Yf:
                 room.drawRoomName(win)
+                self.currRoom = room
 
     def getRenderedWalls(self):
         return self.renderedWalls
+
+    def getCurrRoom(self):
+        return self.currRoom
