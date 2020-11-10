@@ -6,10 +6,12 @@ from Constants import *
 
 class Room:
 
-    def __init__(self, Xi=0, Yi=0, Xf=0, Yf=0):
+    def __init__(self, doors, Xi=0, Yi=0, Xf=0, Yf=0):
         self.Xi, self.Yi, self.Xf, self.Yf = Xi, Yi, Xf, Yf
         self.patterns = []
         self.walls = []
+        self.doors = []
+        self.openedDoorPoints = []
 
     def draw(self, win, x, y, mapFOV):
         fov = mapFOV / max(WIDTH, HEIGHT)
@@ -18,6 +20,10 @@ class Room:
             self.patterns[i].drawRect(win, self.Xi + deltaX, self.Yi + deltaY, self.Xf + deltaX, self.Yf + deltaY, fov)
         for i in range(len(self.walls)):
             self.walls[i].draw(win, x, y, fov)
+        for pointSet in self.openedDoorPoints:
+            xVals = [point[0] for point in pointSet]
+            yVals = [point[1] for point in pointSet]
+            pygame.draw.rect(win, (112, 112, 112), (min(xVals) + deltaX, min(yVals) + deltaY, max(xVals) - min(xVals), max(yVals) - min(yVals)))
 
     def getName(self):
         return ""
@@ -33,16 +39,20 @@ class Room:
         for w in self.walls:
             if w.points == wall.points:
                 self.walls.remove(w)
-                pygame.mixer.Channel(PURCHASE_SOUND_CHANNEL).play(pygame.mixer.Sound(BUY_SOUND), maxtime=1300)
+                self.openedDoorPoints.append(w.points)
+                return True
+        return False
 
     def generateWallPointsBetweenDoors(self, width=10):
         roomCorners = [(self.Xi, self.Yi), (self.Xi, self.Yf), (self.Xf, self.Yf), (self.Xf, self.Yi)]
-        wallPoints = [[]] * len(self.walls)
+        wallPoints = [[]] * len(self.doors)
         for i in range(len(self.walls)):        # Doors Must Rotate Around Room Clockwise
             wallInnerPoints = []
             wallOuterPoints = []
-            x1, y1 = self.walls[i].innerPoints[1]
-            x2, y2 = self.walls[(i + 1) % len(self.walls)].innerPoints[0]
+            innerPoints = [(x, y) for x, y in self.doors[i].points if x == self.Xi or x == self.Xf or y == self.Yi or y == self.Yf]
+            nextInnerPoints = [(x, y) for x, y in self.doors[(i + 1) % len(self.doors)].points if x == self.Xi or x == self.Xf or y == self.Yi or y == self.Yf]
+            x1, y1 = innerPoints[1]
+            x2, y2 = nextInnerPoints[0]
             wallInnerPoints.append((x1, y1))
             if x1 == self.Xi:
                 wallOuterPoints.append((x1 - width, y1))

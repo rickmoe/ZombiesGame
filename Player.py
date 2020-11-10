@@ -96,10 +96,9 @@ class Player:
 
     def checkDoorBuy(self, currMap):
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_f]:
-            if self.nearbyDoor is not None and self.points >= self.nearbyDoor.getCost():
+        if keys[pygame.K_f] and self.nearbyDoor is not None and self.points >= self.nearbyDoor.getCost():
+            if currMap.buyDoor(self.nearbyDoor):
                 self.points -= self.nearbyDoor.getCost()
-                currMap.getCurrRoom().removeWall(self.nearbyDoor)
 
     def drawPoints(self, win):
         pointFont = pygame.font.SysFont(GUN_FONT, 32)

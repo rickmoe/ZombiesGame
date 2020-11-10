@@ -135,6 +135,7 @@ def getRectCordsOnCircleDeg(deg, r):
 
 def getWallIntersection(Xi, Yi, Xv, Yv, walls):
     Xf, Yf = Xi + Xv * Gun.MAX_BULLET_LENGTH, Yi + Yv * Gun.MAX_BULLET_LENGTH
+    xCol, yCol = Xf, Yf
     for wall in walls:
         for i in range(len(wall.innerPoints) - 1):
             x1, y1, x2, y2 = wall.innerPoints[i][0], wall.innerPoints[i][1], wall.innerPoints[i + 1][0], wall.innerPoints[i + 1][1]
@@ -145,5 +146,4 @@ def getWallIntersection(Xi, Yi, Xv, Yv, walls):
                 u = -((x1 - x2) * (y1 - Yi) - (y1 - y2) * (x1 - Xi)) / denominator
                 if 0 <= t <= 1 and 0 <= u <= 1:
                     xCol, yCol = x1 + t * (x2 - x1), y1 + t * (y2 - y1)
-                    return xCol, yCol
-    return Xf, Yf
+    return xCol, yCol

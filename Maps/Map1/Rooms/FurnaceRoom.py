@@ -1,15 +1,14 @@
 from Maps.Map1.Patterns.WhiteTile import WhiteTile
 from Maps.Room import Room
 from Maps.Wall import Wall
-from Maps.Door import Door
 
 class FurnaceRoom(Room):
 
-    def __init__(self):
-        super().__init__(-1300, -250, -650, 100)
+    def __init__(self, doors):
+        super().__init__(doors, -1320, -250, -650, 100)
         self.patterns = [WhiteTile()]
-        self.walls = [Door([(-650, -75), (-650, 75)], '-x', 500),
-                      Door([(-1000, -250), (-1150, -250)], '+y', 750)]
+        self.doors = [door for door in doors if FurnaceRoom in door.getRooms()]
+        self.walls = self.doors
         for pointSet in self.generateWallPointsBetweenDoors():
             self.walls.append(Wall(pointSet))
 

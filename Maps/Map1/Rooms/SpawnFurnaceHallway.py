@@ -1,15 +1,14 @@
 from Maps.Map1.Patterns.WhiteTile import WhiteTile
 from Maps.Room import Room
 from Maps.Wall import Wall
-from Maps.Door import Door
 
 class SpawnFurnaceHallway(Room):
 
-    def __init__(self):
-        super().__init__(-650, -125, -350, 125)
+    def __init__(self, doors):
+        super().__init__(doors, -640, -100, -360, 100)
         self.patterns = [WhiteTile()]
-        self.walls = [Door([(-650, -75), (-650, 75)], '+x', 500),
-                      Door([(-350, 75), (-350, -75)], '-y', 750)]
+        self.doors = [door for door in doors if SpawnFurnaceHallway in door.getRooms()]
+        self.walls = self.doors
         for pointSet in self.generateWallPointsBetweenDoors():
             self.walls.append(Wall(pointSet))
 

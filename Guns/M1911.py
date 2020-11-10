@@ -6,7 +6,6 @@ pygame.init()
 class M1911(Gun):
 
     LENGTH = 1.2                    # Multiplied by radius
-    DRAW_DIST_FROM_CENTER = 0.9     # Percentage of the body before the gun is drawn
     AMMO_CLIP = 8
     AMMO_RESERVE = 80
     SHOT_CD_FRAMES = 5
