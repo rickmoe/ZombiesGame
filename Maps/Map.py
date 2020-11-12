@@ -12,6 +12,7 @@ class Map:
 
     def draw(self, win, x, y, mapFOV):
         self.renderedWalls = []
+        self.currRoom = None
         Xi, Yi, Xf, Yf = x - mapFOV / 2, y - mapFOV / 2, x + mapFOV / 2, y + mapFOV / 2
         for room in self.rooms:
             if min(room.Xf, Xf) >= max(room.Xi, Xi) and min(room.Yf, Yf) >= max(room.Yi, Yi):
@@ -19,7 +20,6 @@ class Map:
                 self.renderedWalls.extend(room.walls)
             for rect in room.rects:
                 if rect[0] <= x <= rect[0] + rect[2] and rect[1] <= y <= rect[1] + rect[3]:
-                    room.drawRoomName(win)
                     self.currRoom = room
 
     def getRenderedWalls(self):

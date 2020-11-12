@@ -13,7 +13,7 @@ class Player:
     MAX_SPRINT_FRAMES = 90
     SPRINT_CD_FRAMES = 45
     SPRINT_RUNOUT_CD_FRAMES = 90
-    START_POINTS = 5000
+    START_POINTS = 10000
 
     def __init__(self, x, y, radius=20, facingDeg=180, visorLengthDeg=90, speed=3):
         self.x = x

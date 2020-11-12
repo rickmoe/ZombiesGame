@@ -29,7 +29,7 @@ class Room:
         for pointSet in self.openedDoorPoints:
             xVals = [point[0] for point in pointSet]
             yVals = [point[1] for point in pointSet]
-            pygame.draw.rect(win, (112, 112, 112), (min(xVals) + deltaX, min(yVals) + deltaY, max(xVals) - min(xVals), max(yVals) - min(yVals)))
+            pygame.draw.rect(win, (96, 96, 96), (min(xVals) + deltaX, min(yVals) + deltaY, max(xVals) - min(xVals), max(yVals) - min(yVals)))
 
     def getName(self):
         return ""
@@ -64,6 +64,10 @@ class Room:
         inflatedPoly = Polygon(self.findRoomPoints([(x - width, y - width, w + width * 2, h + width * 2) for x, y, w, h in self.rects]))
         for wall in self.walls:
             roomPoly = roomPoly.union(Polygon(wall.points))
-        walls = list(inflatedPoly.difference(roomPoly))
+        walls = inflatedPoly.difference(roomPoly)
+        if isinstance(walls, Polygon):
+            walls = [walls]
+        else:
+            walls = list(walls)
         walls = [list(s.exterior.coords)[:-1] for s in walls]
         return walls

@@ -26,6 +26,8 @@ def drawDisplay(window, events):
         player.draw(window, currMap.getRenderedWalls())
         for instance in DelayedAction.getInstances():
             instance.tick()
+    if currMap.getCurrRoom() is not None:
+        currMap.getCurrRoom().drawRoomName(window)
     fpsFont = pygame.font.SysFont('arial', 32)
     fpsText = fpsFont.render('{:.0f}'.format(clock.get_fps()), False, (0, 64, 0))
     fpsTextRect = fpsText.get_rect()
