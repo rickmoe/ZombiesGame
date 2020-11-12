@@ -77,7 +77,7 @@ class Gun:
                 finalX, finalY = tuple(getWallIntersection(Xi, Yi, Xv, Yv, walls))
                 finalX += WIDTH / 2 - playerX
                 finalY += HEIGHT / 2 - playerY
-                pygame.draw.line(win, (255, 255, 255), self.getDrawEndPos(x, y, r, theta, self.LENGTH * r), (finalX, finalY), 3)
+                self.drawLineOfFire(win, x, y, finalX, finalY, r, theta)
                 self.drawWallHitmarker(win, finalX, finalY)
                 self.ammoClip -= 1
                 self.shotCdFrames = self.SHOT_CD_FRAMES
@@ -114,6 +114,11 @@ class Gun:
                                [i, pygame.draw.line, [win, color, (x, y + val[0] * MULT_1D), (x, y + val[1] * MULT_1D), val[2] - 2]],
                                [i, pygame.draw.line, [win, color, (x + val[0] * MULT_1D, y), (x + val[1] * MULT_1D, y), val[2] - 2]]])
 
+    def drawLineOfFire(self, win, Xi, Yi, Xf, Yf, r, theta):
+        DelayedAction([[0, pygame.draw.line, [win, (255, 255, 255), self.getDrawEndPos(Xi, Yi, r, theta, self.LENGTH * r), (Xf, Yf), 2]],
+                       [1, pygame.draw.line, [win, (255, 255, 255), self.getDrawEndPos(Xi, Yi, r, theta, self.LENGTH * r), (Xf, Yf), 2]],
+                       ])
+
     def takeFromReserve(self, bullets):
         self.ammoReserve -= bullets
 
@@ -135,15 +140,14 @@ def getRectCordsOnCircleDeg(deg, r):
 
 def getWallIntersection(Xi, Yi, Xv, Yv, walls):
     Xf, Yf = Xi + Xv * Gun.MAX_BULLET_LENGTH, Yi + Yv * Gun.MAX_BULLET_LENGTH
-    xCol, yCol = Xf, Yf
     for wall in walls:
-        for i in range(len(wall.innerPoints) - 1):
-            x1, y1, x2, y2 = wall.innerPoints[i][0], wall.innerPoints[i][1], wall.innerPoints[i + 1][0], wall.innerPoints[i + 1][1]
+        for i in range(len(wall.points)):
+            x1, y1, x2, y2 = wall.points[i][0], wall.points[i][1], wall.points[(i + 1) % len(wall.points)][0], wall.points[(i + 1) % len(wall.points)][1]
             denominator = (x1 - x2) * (Yi - Yf) - (y1 - y2) * (Xi - Xf)
             numerator = (x1 - Xi) * (Yi - Yf) - (y1 - Yi) * (Xi - Xf)
             if denominator != 0:
                 t = numerator / denominator
                 u = -((x1 - x2) * (y1 - Yi) - (y1 - y2) * (x1 - Xi)) / denominator
                 if 0 <= t <= 1 and 0 <= u <= 1:
-                    xCol, yCol = x1 + t * (x2 - x1), y1 + t * (y2 - y1)
-    return xCol, yCol
+                    Xf, Yf = x1 + t * (x2 - x1), y1 + t * (y2 - y1)
+    return Xf, Yf

@@ -138,8 +138,8 @@ class Player:
     def isRunningIntoWall(self, x3, y3, xv, yv, walls):
         x4, y4 = x3 + xv, y3 + yv
         for wall in walls:
-            for i in range(len(wall.innerPoints) - 1):
-                x1, y1, x2, y2 = wall.innerPoints[i][0], wall.innerPoints[i][1], wall.innerPoints[i + 1][0], wall.innerPoints[i + 1][1]
+            for i in range(len(wall.points)):
+                x1, y1, x2, y2 = wall.points[i][0], wall.points[i][1], wall.points[(i + 1) % len(wall.points)][0], wall.points[(i + 1) % len(wall.points)][1]
                 denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4)
                 numerator = (x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)
                 if denominator != 0:

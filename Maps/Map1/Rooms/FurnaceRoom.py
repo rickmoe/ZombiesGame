@@ -5,7 +5,7 @@ from Maps.Wall import Wall
 class FurnaceRoom(Room):
 
     def __init__(self, doors):
-        super().__init__(doors, -1320, -250, -650, 100)
+        super().__init__(doors, [(-1300, -250, 650, 300), (-950, 50, 300, 200)])
         self.patterns = [WhiteTile()]
         self.doors = [door for door in doors if FurnaceRoom in door.getRooms()]
         self.walls = self.doors

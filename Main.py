@@ -4,6 +4,7 @@ from Maps.Map1.Map1 import Map1
 from Player import Player
 from Constants import *
 pygame.init()
+pygame.font.init()
 
 clock = pygame.time.Clock()
 
@@ -25,6 +26,11 @@ def drawDisplay(window, events):
         player.draw(window, currMap.getRenderedWalls())
         for instance in DelayedAction.getInstances():
             instance.tick()
+    fpsFont = pygame.font.SysFont('arial', 32)
+    fpsText = fpsFont.render('{:.0f}'.format(clock.get_fps()), False, (0, 64, 0))
+    fpsTextRect = fpsText.get_rect()
+    fpsTextRect.topright = (WIDTH, 0)
+    win.blit(fpsText, fpsTextRect)
     pygame.display.update()
 
 running = True

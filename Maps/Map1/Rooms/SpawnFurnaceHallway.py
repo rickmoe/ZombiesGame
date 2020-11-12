@@ -5,7 +5,7 @@ from Maps.Wall import Wall
 class SpawnFurnaceHallway(Room):
 
     def __init__(self, doors):
-        super().__init__(doors, -640, -100, -360, 100)
+        super().__init__(doors, [(-640, -100, 280, 200)])
         self.patterns = [WhiteTile()]
         self.doors = [door for door in doors if SpawnFurnaceHallway in door.getRooms()]
         self.walls = self.doors

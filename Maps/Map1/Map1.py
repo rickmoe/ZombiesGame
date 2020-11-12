@@ -12,7 +12,6 @@ class Map1(Map):
                       Door([(-50, 200), (75, 200)], '-y', 750, [SpawnRoom]),
                       Door([(300, -200), (150, -200)], '+y', 1000, [SpawnRoom]),
                       Door([(-640, -74), (-640, 74)], '+x', 500, [SpawnFurnaceHallway, FurnaceRoom]),
-                      # Door([(-650, -75), (-650, 75)], '-x', 500, [FurnaceRoom]),
                       Door([(-1000, -250), (-1150, -250)], '+y', 750, [FurnaceRoom]),
                       ]
         self.rooms = [SpawnRoom(self.doors), SpawnFurnaceHallway(self.doors), FurnaceRoom(self.doors)]
