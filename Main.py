@@ -19,9 +19,10 @@ mapFOV = FOV * max(WIDTH, HEIGHT)
 def drawDisplay(window, events):
     window.fill((0, 0, 0))
     for player in players:
-        player.updatePos(currMap.getRenderedWalls())
+        player.updatePos(currMap.getRenderedWalls(), currMap.getRenderedWallBuys())
         x, y = player.getPos()
         player.checkDoorBuy(currMap)
+        player.checkGunBuy()
         currMap.draw(window, x, y, mapFOV)
         player.checkShooting(events)
         player.draw(window, currMap.getRenderedWalls())

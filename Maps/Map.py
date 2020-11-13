@@ -7,23 +7,29 @@ class Map:
     def __init__(self):
         self.rooms = []
         self.renderedWalls = []
+        self.renderedWallBuys = []
         self.doors = []
         self.currRoom = None
 
     def draw(self, win, x, y, mapFOV):
         self.renderedWalls = []
+        self.renderedWallBuys = []
         self.currRoom = None
         Xi, Yi, Xf, Yf = x - mapFOV / 2, y - mapFOV / 2, x + mapFOV / 2, y + mapFOV / 2
         for room in self.rooms:
             if min(room.Xf, Xf) >= max(room.Xi, Xi) and min(room.Yf, Yf) >= max(room.Yi, Yi):
                 room.draw(win, x, y, mapFOV)
                 self.renderedWalls.extend(room.walls)
+                self.renderedWallBuys.extend(room.wallBuys)
             for rect in room.rects:
                 if rect[0] <= x <= rect[0] + rect[2] and rect[1] <= y <= rect[1] + rect[3]:
                     self.currRoom = room
 
     def getRenderedWalls(self):
         return self.renderedWalls
+
+    def getRenderedWallBuys(self):
+        return self.renderedWallBuys
 
     def getCurrRoom(self):
         return self.currRoom

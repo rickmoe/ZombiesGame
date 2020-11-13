@@ -21,11 +21,9 @@ class FiveSeven(Gun):
         self.shotCdFrames = 0
         self.reloadCdFrames = 0
 
-    def draw(self, win, x, y, r, theta):
-        self.drawGUI(win, self.getAmmoClip(), self.getAmmoReserve())
-        r *= self.DRAW_DIST_FROM_CENTER
-        pygame.draw.line(win, (192, 192, 192), self.getDrawStartPos(x, y, r, theta), self.getDrawEndPos(x , y , r, theta, self.LENGTH * r), width=5)
-        pygame.draw.line(win, (32, 32, 32), self.getDrawEndPos(x, y, r, theta, 0.7 * self.LENGTH * r), self.getDrawEndPos(x, y, r, theta, self.LENGTH * r), width=5)
+    def drawGunBody(self, win, x, y, r, theta):
+        pygame.draw.line(win, (16, 16, 16), self.getDrawStartPos(x, y, r, theta), self.getDrawEndPos(x, y, r, theta, self.LENGTH * r), width=5)
+        pygame.draw.line(win, (0, 64, 0), self.getDrawEndPos(x, y, r, theta, 0.8 * self.LENGTH * r), self.getDrawEndPos(x, y, r, theta, self.LENGTH * r), width=5)
 
     @staticmethod
     def getName():

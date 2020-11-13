@@ -18,6 +18,7 @@ class Room:
         self.walls = []
         self.doors = []
         self.openedDoorPoints = []
+        self.wallBuys = []
 
     def draw(self, win, x, y, mapFOV):
         fov = mapFOV / max(WIDTH, HEIGHT)
@@ -30,6 +31,8 @@ class Room:
             xVals = [point[0] for point in pointSet]
             yVals = [point[1] for point in pointSet]
             pygame.draw.rect(win, (96, 96, 96), (min(xVals) + deltaX, min(yVals) + deltaY, max(xVals) - min(xVals), max(yVals) - min(yVals)))
+        for wallBuy in self.wallBuys:
+            wallBuy.draw(win, x, y)
 
     def getName(self):
         return ""

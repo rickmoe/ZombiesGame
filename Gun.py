@@ -127,6 +127,20 @@ class Gun:
     def addToClip(self, bullets):
         self.ammoClip += bullets
 
+    def isMaxAmmo(self):
+        return self.ammoClip == self.AMMO_CLIP and self.ammoReserve == self.AMMO_RESERVE
+
+    def fillAmmo(self):
+        self.ammoClip, self.ammoReserve = self.AMMO_CLIP, self.AMMO_RESERVE
+
+    def draw(self, win, x, y, r, theta):
+        self.drawGUI(win, self.getAmmoClip(), self.getAmmoReserve())
+        r *= self.DRAW_DIST_FROM_CENTER
+        self.drawGunBody(win, x, y, r, theta)
+
+    def drawGunBody(self, win, x, y, r, theta):
+        pass
+
 def degreesToRadians(deg):
     return deg / 180 * math.pi
 

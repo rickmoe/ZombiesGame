@@ -20,10 +20,8 @@ class M1911(Gun):
         self.shotCdFrames = 0
         self.reloadCdFrames = 0
 
-    def draw(self, win, x, y, r, theta):
-        self.drawGUI(win, self.getAmmoClip(), self.getAmmoReserve())
-        r *= self.DRAW_DIST_FROM_CENTER
-        pygame.draw.line(win, (64, 64, 64), self.getDrawStartPos(x, y, r, theta), self.getDrawEndPos(x , y , r, theta, self.LENGTH * r), width=4)
+    def drawGunBody(self, win, x, y, r, theta):
+        pygame.draw.line(win, (64, 64, 64), self.getDrawStartPos(x, y, r, theta), self.getDrawEndPos(x, y, r, theta, self.LENGTH * r), width=4)
 
     @staticmethod
     def getName():
