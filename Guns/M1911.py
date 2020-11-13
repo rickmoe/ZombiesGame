@@ -8,7 +8,7 @@ class M1911(Gun):
     LENGTH = 1.2                    # Multiplied by radius
     AMMO_CLIP = 8
     AMMO_RESERVE = 80
-    SHOT_CD_FRAMES = 5
+    SHOT_CD_FRAMES = 6
     SHOT_CD_RELOAD_FRAMES = 58
     SHOOT_SOUND = './Sounds/M1911shot.mp3'      # https://www.fesliyanstudios.com/royalty-free-sound-effects-download/p226-9mm-pistol-gun-296
     CLICK_SOUND = './Sounds/M1911click.mp3'     # https://www.fesliyanstudios.com/royalty-free-sound-effects-download/p226-9mm-pistol-gun-296

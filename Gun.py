@@ -17,10 +17,12 @@ class Gun:
     AMMO_RESERVE = 0
     SHOT_CD_FRAMES = 0
     SHOT_CD_RELOAD_FRAMES = 0
+    SHOOT_SOUND_MAXTIME = 0
     ammoClip = AMMO_CLIP
     ammoReserve = AMMO_RESERVE
     shotCdFrames = 0
     reloadCdFrames = 0
+    automatic = False
 
     @classmethod
     def drawGUI(cls, win, ammoClip, ammoRes):
@@ -81,7 +83,7 @@ class Gun:
                 self.drawWallHitmarker(win, finalX, finalY)
                 self.ammoClip -= 1
                 self.shotCdFrames = self.SHOT_CD_FRAMES
-                pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.SHOOT_SOUND))
+                pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.SHOOT_SOUND), maxtime=self.SHOOT_SOUND_MAXTIME)
         else:
             if self.shotCdFrames <= 0:
                 pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.CLICK_SOUND))

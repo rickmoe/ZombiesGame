@@ -9,6 +9,7 @@ pygame.font.init()
 clock = pygame.time.Clock()
 
 pygame.display.set_caption(WIN_NAME)
+pygame.mixer.music.set_volume(0.3)
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 
 players = [Player(0, 0)]

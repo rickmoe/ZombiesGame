@@ -3,6 +3,8 @@ pygame.init()
 import math
 from Constants import *
 from Guns.M1911 import M1911
+from Guns.DesertEagle import DesertEagle
+from Guns.FiveSeven import FiveSeven
 from Maps.Door import Door
 
 class Player:
@@ -22,7 +24,10 @@ class Player:
         self.facing = facingDeg                 # In Degrees
         self.visorLength = visorLengthDeg       # In Degrees
         self.speed = speed
-        self.gun = M1911()
+        self.gun1 = M1911()
+        self.gun2 = None
+        self.gun = self.gun1
+        self.gunSwitchRisingEdge = True
         self.points = Player.START_POINTS
         self.sprintFrames = Player.MAX_SPRINT_FRAMES
         self.sprintCdFrames = 0
@@ -59,7 +64,7 @@ class Player:
         if keys[pygame.K_LSHIFT]:
             if self.sprintFrames > 0:
                 self.speed = self.SPRINT_SPEED
-                self.sprintFrames -=1
+                self.sprintFrames -= 1
                 self.sprintCdFrames = self.SPRINT_RUNOUT_CD_FRAMES if self.sprintFrames == 0 else self.SPRINT_CD_FRAMES
             else:
                 self.speed = self.BASE_SPEED
@@ -86,6 +91,15 @@ class Player:
                 break
         else:
             self.nearbyDoor = None
+        if keys[pygame.K_x]:
+            if self.gunSwitchRisingEdge:
+                if self.gun is self.gun1:
+                    self.gun = self.gun2 if self.gun2 is not None else self.gun
+                elif self.gun is self.gun2:
+                    self.gun = self.gun1 if self.gun1 is not None else self.gun
+            self.gunSwitchRisingEdge = False
+        else:
+            self.gunSwitchRisingEdge = True
         velDir = getCordsDirectionDeg(vel[0], vel[1])
         deltaX, deltaY = getRectCordsOnCircleDeg(velDir, 0 if vel[0] == 0 and vel[1] == 0 else self.speed)
         self.x += deltaX
@@ -131,9 +145,12 @@ class Player:
 
     def checkShooting(self, events):
         self.shooting = False
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.shooting = True
+        if not self.gun.automatic:
+            for event in events:
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.shooting = True
+        elif self.gun.automatic and events.mouse.get_pressed()[0]:
+            self.shooting = True
 
     def isRunningIntoWall(self, x3, y3, xv, yv, walls):
         x4, y4 = x3 + xv, y3 + yv
