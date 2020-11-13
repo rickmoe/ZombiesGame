@@ -11,7 +11,7 @@ class FiveSeven(Gun):
     SHOT_CD_FRAMES = 5
     SHOT_CD_RELOAD_FRAMES = 58
     SHOOT_SOUND_MAXTIME = 750
-    SHOOT_SOUND = './Sounds/FiveSevenShot.mp3'    # https://www.fesliyanstudios.com/royalty-free-sound-effects-download/desert-eagle-.50-ae-gun-295
+    SHOOT_SOUND = './Sounds/FiveSevenShot.mp3'      # http://tale3habet.eb2a.com/sound.php?id=3903
     CLICK_SOUND = './Sounds/M1911click.mp3'         # https://www.fesliyanstudios.com/royalty-free-sound-effects-download/p226-9mm-pistol-gun-296
     RELOAD_SOUND = './Sounds/M1911reload.wav'       # https://opengameart.org/content/handgun-reload-sound-effect
 
