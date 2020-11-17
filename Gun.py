@@ -3,7 +3,6 @@ import math
 from Constants import *
 from DelayedAction import DelayedAction
 pygame.init()
-pygame.mixer.init()
 
 class Gun:
 
@@ -18,6 +17,7 @@ class Gun:
     SHOT_CD_FRAMES = 0
     SHOT_CD_RELOAD_FRAMES = 0
     SHOOT_SOUND_MAXTIME = 0
+    SPEED_MULT = 1.0                # Multiplied By Speed
     ammoClip = AMMO_CLIP
     ammoReserve = AMMO_RESERVE
     shotCdFrames = 0
@@ -55,6 +55,9 @@ class Gun:
     def getAmmoReserve(self):
         return self.ammoReserve
 
+    def getSpeedMult(self):
+        return self.SPEED_MULT
+
     @staticmethod
     def getDrawStartPos(x, y, r, theta):
         circX, circY = getRectCordsOnCircleDeg(theta - 90, r)
@@ -79,11 +82,10 @@ class Gun:
                 finalX, finalY = tuple(getWallIntersection(Xi, Yi, Xv, Yv, walls))
                 finalX += WIDTH / 2 - playerX
                 finalY += HEIGHT / 2 - playerY
-                self.drawLineOfFire(win, x, y, finalX, finalY, r, theta)
-                self.drawWallHitmarker(win, finalX, finalY)
                 self.ammoClip -= 1
                 self.shotCdFrames = self.SHOT_CD_FRAMES
-                pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.SHOOT_SOUND), maxtime=self.SHOOT_SOUND_MAXTIME)
+                XiShot, YiShot = self.getDrawEndPos(x, y, r, theta, self.LENGTH * r)
+                return XiShot - (WIDTH / 2 - playerX), YiShot - (HEIGHT / 2 - playerY), finalX - (WIDTH / 2 - playerX), finalY - (HEIGHT / 2 - playerY)
         else:
             if self.shotCdFrames <= 0:
                 pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.CLICK_SOUND))
@@ -101,7 +103,9 @@ class Gun:
         self.shotCdFrames = 0 if self.shotCdFrames <= 0 else self.shotCdFrames - 1
         self.reloadCdFrames = 0 if self.reloadCdFrames <= 0 else self.reloadCdFrames - 1
 
-    def drawWallHitmarker(self, win, x, y):
+    def drawWallHitmarker(self, win, playerX, playerY, x, y):
+        x += WIDTH / 2 - playerX
+        y += HEIGHT / 2 - playerY
         vals = [[1, 2, 2], [2, 3, 3], [3, 5, 6], [4, 6, 5], [6, 7, 2]]
         colors = [(128, 64, 0), (128, 16, 0)]
         MULT_1D = 1.8
@@ -116,9 +120,13 @@ class Gun:
                                [i, pygame.draw.line, [win, color, (x, y + val[0] * MULT_1D), (x, y + val[1] * MULT_1D), val[2] - 2]],
                                [i, pygame.draw.line, [win, color, (x + val[0] * MULT_1D, y), (x + val[1] * MULT_1D, y), val[2] - 2]]])
 
-    def drawLineOfFire(self, win, Xi, Yi, Xf, Yf, r, theta):
-        DelayedAction([[0, pygame.draw.line, [win, (255, 255, 255), self.getDrawEndPos(Xi, Yi, r, theta, self.LENGTH * r), (Xf, Yf), 2]],
-                       [1, pygame.draw.line, [win, (255, 255, 255), self.getDrawEndPos(Xi, Yi, r, theta, self.LENGTH * r), (Xf, Yf), 2]],
+    def drawLineOfFire(self, win, playerX, playerY, Xi, Yi, Xf, Yf):
+        Xi += WIDTH / 2 - playerX
+        Yi += HEIGHT / 2 - playerY
+        Xf += WIDTH / 2 - playerX
+        Yf += HEIGHT / 2 - playerY
+        DelayedAction([[0, pygame.draw.line, [win, (255, 255, 255), (Xi, Yi), (Xf, Yf), 2]],
+                       [1, pygame.draw.line, [win, (255, 255, 255), (Xi, Yi), (Xf, Yf), 2]],
                        ])
 
     def takeFromReserve(self, bullets):

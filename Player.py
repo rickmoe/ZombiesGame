@@ -10,21 +10,21 @@ from Maps.Door import Door
 class Player:
 
     visorRadiusOffsetPercent = 1.025
-    BASE_SPEED = 4.0
-    SPRINT_SPEED = 6.0
+    VISOR_LEN_DEG = 90
+    BASE_SPEED = 5.0
+    SPRINT_SPEED = 7.5
     AWARENESS_RANGE = 4.0       # Multiplied By Radius To See How Far Away Player Can Detect Doors, Wall Buys, etc.
     MAX_SPRINT_FRAMES = 90
     SPRINT_CD_FRAMES = 45
     SPRINT_RUNOUT_CD_FRAMES = 90
     START_POINTS = 10000
 
-    def __init__(self, x, y, radius=20, facingDeg=180, visorLengthDeg=90, speed=3):
+    def __init__(self, x, y, radius=20, facingDeg=180):
         self.x = x
         self.y = y
         self.radius = radius
         self.facing = facingDeg                 # In Degrees
-        self.visorLength = visorLengthDeg       # In Degrees
-        self.speed = speed
+        self.speed = self.BASE_SPEED
         self.gun1 = M1911()
         self.gun2 = None
         self.gun = self.gun1
@@ -35,17 +35,24 @@ class Player:
         self.shooting = False
         self.nearbyDoor = None
         self.nearbyWallBuy = None
+        self.shotVect = None
 
     def draw(self, win, walls):
         pygame.draw.circle(win, (0, 0, 255), (WIDTH / 2, HEIGHT / 2), self.radius)
         arcRect = (int(WIDTH / 2 - self.radius * self.visorRadiusOffsetPercent), int(HEIGHT / 2 - self.radius * self.visorRadiusOffsetPercent),
                         int(self.radius * self.visorRadiusOffsetPercent * 2), int(self.radius * self.visorRadiusOffsetPercent * 2))
-        pygame.draw.arc(win, (0, 255, 0), arcRect, degreesToRadians(self.facing) - degreesToRadians(self.visorLength) / 2,
-                        degreesToRadians(self.facing) + degreesToRadians(self.visorLength) / 2, width=int(self.radius / 6))
+        pygame.draw.arc(win, (0, 255, 0), arcRect, degreesToRadians(self.facing) - degreesToRadians(self.VISOR_LEN_DEG) / 2,
+                        degreesToRadians(self.facing) + degreesToRadians(self.VISOR_LEN_DEG) / 2, width=int(self.radius / 6))
         self.gun.draw(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing)
         if self.shooting:
             mouseX, mouseY = pygame.mouse.get_pos()
-            self.gun.shoot(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing, mouseX, mouseY, self.x, self.y, walls)
+            self.shotVect = self.gun.shoot(win, WIDTH / 2, HEIGHT / 2, self.radius, self.facing, mouseX, mouseY, self.x, self.y, walls)
+        else:
+            self.shotVect = None
+        if self.shotVect is not None:
+            self.gun.drawLineOfFire(win, self.x, self.y, *self.shotVect)
+            self.gun.drawWallHitmarker(win, self.x, self.y, *self.shotVect[2:])
+            pygame.mixer.Channel(GUN_SHOT_CHANNEL).play(pygame.mixer.Sound(self.gun.SHOOT_SOUND), maxtime=self.gun.SHOOT_SOUND_MAXTIME)
         self.drawPoints(win)
         self.drawNearbyDoorCost(win)
         self.drawNearbyWallBuyCost(win)
@@ -79,6 +86,7 @@ class Player:
             self.decrementSprintCdFrames()
             if self.sprintCdFrames <= 0:
                 self.incrementSprintFrames()
+        self.speed *= self.gun.getSpeedMult()
         if keys[pygame.K_r]:
             self.gun.reload()
         if self.isRunningIntoWall(self.x, self.y, vel[0] * (self.speed + self.radius), 0, walls):
