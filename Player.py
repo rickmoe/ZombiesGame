@@ -60,6 +60,9 @@ class Player:
     def getPos(self):
         return self.x, self.y
 
+    def getShotVect(self):
+        return self.shotVect
+
     def updatePos(self, walls, wallBuys):
         keys = pygame.key.get_pressed()
         vel = [0, 0]

@@ -8,6 +8,7 @@ class Gun:
 
     LENGTH = 2.0                    # Multiplied by radius
     DRAW_DIST_FROM_CENTER = 0.9     # Percentage of the body before the gun is drawn
+    BASE_DAMAGE = 0
     MAX_BULLET_LENGTH = 1.5 * max(WIDTH, HEIGHT)
     SHOOT_SOUND = ''
     CLICK_SOUND = ''
@@ -57,6 +58,9 @@ class Gun:
 
     def getSpeedMult(self):
         return self.SPEED_MULT
+
+    def getDamage(self):
+        return self.BASE_DAMAGE# * pow(self.PEN_DAMAGE_CONSERVATION, targetsPassed)
 
     @staticmethod
     def getDrawStartPos(x, y, r, theta):

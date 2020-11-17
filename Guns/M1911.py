@@ -8,6 +8,7 @@ class M1911(Gun):
     LENGTH = 1.2                    # Multiplied by radius
     AMMO_CLIP = 8
     AMMO_RESERVE = 80
+    BASE_DAMAGE = 50
     SHOT_CD_FRAMES = 6
     SHOT_CD_RELOAD_FRAMES = 58
     SPEED_MULT = 0.975

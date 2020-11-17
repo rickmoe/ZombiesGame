@@ -8,6 +8,7 @@ class FiveSeven(Gun):
     LENGTH = 1.3                    # Multiplied by radius
     AMMO_CLIP = 20
     AMMO_RESERVE = 120
+    BASE_DAMAGE = 90
     SHOT_CD_FRAMES = 5
     SHOT_CD_RELOAD_FRAMES = 58
     SHOOT_SOUND_MAXTIME = 750

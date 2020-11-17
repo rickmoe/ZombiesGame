@@ -2,7 +2,7 @@ import pygame
 from DelayedAction import DelayedAction
 from Maps.Map1.Map1 import Map1
 from Player import Player
-from Zombie import Zombie
+from ZombieManager import ZombieManager
 from Constants import *
 
 pygame.init()
@@ -15,7 +15,11 @@ pygame.mixer.music.set_volume(0.3)
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 
 players = [Player(0, 0)]
-zombies = [Zombie(-200, -100, 150), Zombie(-200, 100, 150), Zombie(200, -100, 150), Zombie(200, 100, 150)]
+zm = ZombieManager()
+zombies = [[-200, -100, 150, 1.0], [-200, 100, 150, 1.0], [200, -100, 150, 1.0], [200, 100, 150, 1.0]]
+# (zm.spawn(x, y, h) for x, y, h in zombies)
+for i in range(len(zombies)):
+    zm.spawn(*zombies[i])
 currMap = Map1()
 mapFOV = FOV * max(WIDTH, HEIGHT)
 
@@ -29,11 +33,9 @@ def drawDisplay(window, events):
         currMap.draw(window, x, y, mapFOV)
         player.checkShooting(events)
         player.draw(window, currMap.getRenderedWalls())
+        zm.tick(window, x, y, player.gun, player.getShotVect())
         for instance in DelayedAction.getInstances():
             instance.tick()
-        for zombie in zombies:
-            zombie.updatePos(x, y)
-            zombie.draw(window, x, y)
     if currMap.getCurrRoom() is not None:
         currMap.getCurrRoom().drawRoomName(window)
     fpsFont = pygame.font.SysFont('arial', 32)
