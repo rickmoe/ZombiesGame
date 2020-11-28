@@ -16,10 +16,6 @@ win = pygame.display.set_mode((WIDTH, HEIGHT))
 
 players = [Player(0, 0)]
 zm = ZombieManager()
-zombies = [[-200, -100, 150, 1.0], [-200, 100, 150, 1.0], [200, -100, 150, 1.0], [200, 100, 150, 1.0]]
-# (zm.spawn(x, y, h) for x, y, h in zombies)
-for i in range(len(zombies)):
-    zm.spawn(*zombies[i])
 currMap = Map1()
 mapFOV = FOV * max(WIDTH, HEIGHT)
 
@@ -43,6 +39,15 @@ def drawDisplay(window, events):
     fpsTextRect = fpsText.get_rect()
     fpsTextRect.topright = (WIDTH, 0)
     win.blit(fpsText, fpsTextRect)
+    roundFont = pygame.font.SysFont(FONT, 96)
+    roundText = roundFont.render('{}'.format(zm.getRound()), False, (160, 0, 0))
+    roundText2 = roundFont.render('{}'.format(zm.getRound()), False, (48, 0, 0))
+    roundTextRect = roundText.get_rect()
+    roundTextRect.bottomleft = (15, HEIGHT - 10)
+    roundTextRect2 = roundText.get_rect()
+    roundTextRect2.bottomleft = (roundTextRect.bottomleft[0] + 3, roundTextRect.bottomleft[1] + 3)
+    win.blit(roundText2, roundTextRect2)
+    win.blit(roundText, roundTextRect)
     pygame.display.update()
 
 running = True
